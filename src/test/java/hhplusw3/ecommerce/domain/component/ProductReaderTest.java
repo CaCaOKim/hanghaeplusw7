@@ -17,13 +17,13 @@ import static org.junit.jupiter.api.Assertions.*;
 class ProductReaderTest {
 
     @Autowired
-    ProductReader productReader;
+    ProductService productService;
 
     long id = 1;
 
     @Test
     void getProduct() {
-        Product product = this.productReader.getProduct(id);
+        Product product = this.productService.getProduct(id);
 
         assertThat(product.id()).isEqualTo(id);
         assertThat(product.name()).isEqualTo("bottle");
@@ -33,7 +33,7 @@ class ProductReaderTest {
     @Test
     void getTopProducts() {
         long topNum = 5;
-        List<Product> products = this.productReader.getTopProducts(topNum, "N");
+        List<Product> products = this.productService.getTopProducts(topNum, "N");
 
         assertThat(products.size()).isEqualTo(topNum);
         assertThat(products.get(0).id()).isEqualTo(1);

@@ -1,7 +1,5 @@
 package hhplusw3.ecommerce.domain.component;
 
-import hhplusw3.ecommerce.api.order.dto.OrderProductReq;
-import hhplusw3.ecommerce.api.order.dto.OrderRes;
 import hhplusw3.ecommerce.domain.model.Order;
 import hhplusw3.ecommerce.domain.model.OrderProduct;
 import org.junit.jupiter.api.Test;
@@ -13,14 +11,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class OrderModifierTest {
+class OrderServiceTest {
 
     @Autowired
-    OrderModifier orderModifier;
+    OrderService orderService;
 
     long userId = 1;
 
@@ -31,7 +28,7 @@ class OrderModifierTest {
         orderProducts.add(new OrderProduct(0, 0, 2, null, 3, "ready"));
         Order order = new Order(0, userId, null, 69000, "ready", orderProducts);
 
-        Order result = this.orderModifier.orderProducts(order);
+        Order result = this.orderService.orderProducts(order);
 
         assertThat(result.userId()).isEqualTo(userId);
         assertThat(result.totalPrice()).isEqualTo(69000);
@@ -48,8 +45,8 @@ class OrderModifierTest {
     void updateOrderState() {
         List<OrderProduct> orderProducts = new ArrayList<>();
         orderProducts.add(new OrderProduct(0, 0, 1, null, 2, "ready"));
-        Order order = this.orderModifier.orderProducts(new Order(0, userId, null, 30000, "ready", orderProducts));
-        Order result = this.orderModifier.updateOrderState(order.id(), "complete");
+        Order order = this.orderService.orderProducts(new Order(0, userId, null, 30000, "ready", orderProducts));
+        Order result = this.orderService.updateOrderState(order.id(), "complete");
 
         assertThat(result.id()).isEqualTo(order.id());
         assertThat(result.userId()).isEqualTo(userId);
@@ -60,8 +57,8 @@ class OrderModifierTest {
     void updateOrderProductState() {
         List<OrderProduct> orderProducts = new ArrayList<>();
         orderProducts.add(new OrderProduct(0, 0, 1, null, 2, "ready"));
-        Order order = this.orderModifier.orderProducts(new Order(0, userId, null, 30000, "ready", orderProducts));
-        OrderProduct result = this.orderModifier.updateOrderProductState(order.orderProducts().get(0).id(), "complete");
+        Order order = this.orderService.orderProducts(new Order(0, userId, null, 30000, "ready", orderProducts));
+        OrderProduct result = this.orderService.updateOrderProductState(order.orderProducts().get(0).id(), "complete");
 
         assertThat(result.id()).isEqualTo(order.orderProducts().get(0).id());
         assertThat(result.productId()).isEqualTo(order.orderProducts().get(0).productId());

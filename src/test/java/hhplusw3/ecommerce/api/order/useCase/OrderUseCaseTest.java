@@ -12,14 +12,13 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
 @Transactional
-class OrderProductsUseCaseTest {
+class OrderUseCaseTest {
 
     @Autowired
-    OrderProductsUseCase orderProductsUseCase;
+    OrderUseCase orderUseCase;
 
     long userId = 1;
 
@@ -29,7 +28,7 @@ class OrderProductsUseCaseTest {
         orderProductReqs.add(new OrderProductReq(1, 1));
         orderProductReqs.add(new OrderProductReq(2, 1));
 
-        OrderRes order = this.orderProductsUseCase.excute(userId, orderProductReqs);
+        OrderRes order = this.orderUseCase.excute(userId, orderProductReqs);
 
         assertThat(order.userId()).isEqualTo(userId);
         assertThat(order.totalPrice()).isEqualTo(28000);
@@ -44,7 +43,7 @@ class OrderProductsUseCaseTest {
         orderProductReqs.add(new OrderProductReq(3, 1));
 
         assertThatThrownBy(() -> {
-            OrderRes order = this.orderProductsUseCase.excute(0, orderProductReqs);
+            OrderRes order = this.orderUseCase.excute(0, orderProductReqs);
         }).isInstanceOf(RuntimeException.class);
     }
 
@@ -54,7 +53,7 @@ class OrderProductsUseCaseTest {
         orderProductReqs.add(new OrderProductReq(3, 5));
 
         assertThatThrownBy(() -> {
-            OrderRes order = this.orderProductsUseCase.excute(userId, orderProductReqs);
+            OrderRes order = this.orderUseCase.excute(userId, orderProductReqs);
         }).isInstanceOf(RuntimeException.class);
     }
 
@@ -65,7 +64,7 @@ class OrderProductsUseCaseTest {
         orderProductReqs.add(new OrderProductReq(2, 2));
 
         assertThatThrownBy(() -> {
-            OrderRes order = this.orderProductsUseCase.excute(2, orderProductReqs);
+            OrderRes order = this.orderUseCase.excute(2, orderProductReqs);
         }).isInstanceOf(RuntimeException.class);
     }
 }
