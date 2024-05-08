@@ -14,25 +14,24 @@ import javax.sql.DataSource;
 
 @Configuration
 public class SpringConfig {
-
-    private EntityManager entityManager;
-
-    public SpringConfig(EntityManager entityManager) {
-        this.entityManager = entityManager;
-    }
-
-    @Bean
-    public UserRepository userRepository() {
-        return new UserRepositoryJpa(entityManager);
-    }
-
-    @Bean
-    public ProductRepository productRepository() {
-        return new ProductRepositoryJpa(entityManager);
-    }
-
-    @Bean
-    public OrderRepository orderRepository() {
-        return new OrderRepositoryJpa(entityManager);
-    }
+//    private EntityManager entityManager;
+//
+//    public SpringConfig(EntityManager entityManager) {
+//        this.entityManager = entityManager;
+//    }
+//
+//    @Bean
+//    public UserRepository userRepository() {
+//        return new UserRepositoryJpa(entityManager);
+//    }
+//
+//    @Bean
+//    public ProductRepository productRepository() {
+//        return new ProductRepositoryJpa(entityManager);
+//    }
+//
+//    @Bean
+//    public OrderRepository orderRepository() {
+//        return new OrderRepositoryJpa(entityManager);
+//    }
 }

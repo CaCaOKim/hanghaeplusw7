@@ -17,12 +17,15 @@ class GetUserUseCaseTest {
     @Autowired
     GetUserUseCase getUserUseCase;
 
+    // given
     long id = 1;
 
     @Test
     void excute() {
+        // when
         UserRes user = getUserUseCase.excute(id);
 
+        // then
         assertThat(user.id()).isEqualTo(id);
         assertThat(user.name()).isEqualTo("robert");
         assertThat(user.money()).isEqualTo(30000);
@@ -30,6 +33,7 @@ class GetUserUseCaseTest {
 
     @Test
     void userId가_유실되면_잔액조회_실패() throws InterruptedException {
+        // when then
         assertThatThrownBy(() -> {
             UserRes user = getUserUseCase.excute(0);
         }).isInstanceOf(RuntimeException.class);

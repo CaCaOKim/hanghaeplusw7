@@ -1,7 +1,7 @@
 package hhplusw3.ecommerce.domain.component;
 
-import hhplusw3.ecommerce.domain.model.Order;
-import hhplusw3.ecommerce.domain.model.OrderProduct;
+import hhplusw3.ecommerce.domain.model.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,36 +18,53 @@ class OrderServiceTest {
 
     @Autowired
     OrderService orderService;
+    @Autowired
+    UserService userService;
+    @Autowired
+    ProductService productService;
 
     long userId = 1;
+    User user;
+    List<ProductWithCount> productWithCounts;
+    TotalProduct totalProduct;
+
+
+    @BeforeEach
+    void getParameters() {
+        // given
+        this.user = this.userService.getUser(userId);
+        this.productWithCounts = new ArrayList<>();
+        this.productWithCounts.add(new ProductWithCount(4, 2));
+        this.productWithCounts.add(new ProductWithCount(5, 3));
+        this.totalProduct = this.productService.checkProductsStock(productWithCounts);
+    }
 
     @Test
-    void orderProducts() {
-        List<OrderProduct> orderProducts = new ArrayList<>();
-        orderProducts.add(new OrderProduct(0, 0, 1, null, 2, "ready"));
-        orderProducts.add(new OrderProduct(0, 0, 2, null, 3, "ready"));
-        Order order = new Order(0, userId, null, 69000, "ready", orderProducts);
+    void order() {
+        // when
+        Order result = this.orderService.order(user, productWithCounts, totalProduct);
 
-        Order result = this.orderService.orderProducts(order);
-
+        // then
         assertThat(result.userId()).isEqualTo(userId);
-        assertThat(result.totalPrice()).isEqualTo(69000);
+        assertThat(result.totalPrice()).isEqualTo(8000);
         assertThat(result.status()).isEqualTo("ready");
-        assertThat(result.orderProducts().get(0).productId()).isEqualTo(order.orderProducts().get(0).productId());
-        assertThat(result.orderProducts().get(0).count()).isEqualTo(order.orderProducts().get(0).count());
-        assertThat(result.orderProducts().get(0).status()).isEqualTo(order.orderProducts().get(0).status());
-        assertThat(result.orderProducts().get(1).productId()).isEqualTo(order.orderProducts().get(1).productId());
-        assertThat(result.orderProducts().get(1).count()).isEqualTo(order.orderProducts().get(1).count());
-        assertThat(result.orderProducts().get(1).status()).isEqualTo(order.orderProducts().get(1).status());
+        assertThat(result.orderProducts().get(0).productId()).isEqualTo(4);
+        assertThat(result.orderProducts().get(0).count()).isEqualTo(2);
+        assertThat(result.orderProducts().get(0).status()).isEqualTo("ready");
+        assertThat(result.orderProducts().get(1).productId()).isEqualTo(5);
+        assertThat(result.orderProducts().get(1).count()).isEqualTo(3);
+        assertThat(result.orderProducts().get(1).status()).isEqualTo("ready");
     }
 
     @Test
     void updateOrderState() {
-        List<OrderProduct> orderProducts = new ArrayList<>();
-        orderProducts.add(new OrderProduct(0, 0, 1, null, 2, "ready"));
-        Order order = this.orderService.orderProducts(new Order(0, userId, null, 30000, "ready", orderProducts));
+        // given
+        Order order = this.orderService.order(user, productWithCounts, totalProduct);
+
+        // when
         Order result = this.orderService.updateOrderState(order.id(), "complete");
 
+        // then
         assertThat(result.id()).isEqualTo(order.id());
         assertThat(result.userId()).isEqualTo(userId);
         assertThat(result.status()).isEqualTo("complete");
@@ -55,13 +72,25 @@ class OrderServiceTest {
 
     @Test
     void updateOrderProductState() {
-        List<OrderProduct> orderProducts = new ArrayList<>();
-        orderProducts.add(new OrderProduct(0, 0, 1, null, 2, "ready"));
-        Order order = this.orderService.orderProducts(new Order(0, userId, null, 30000, "ready", orderProducts));
+        Order order = this.orderService.order(user, productWithCounts, totalProduct);
         OrderProduct result = this.orderService.updateOrderProductState(order.orderProducts().get(0).id(), "complete");
 
         assertThat(result.id()).isEqualTo(order.orderProducts().get(0).id());
         assertThat(result.productId()).isEqualTo(order.orderProducts().get(0).productId());
+        assertThat(result.status()).isEqualTo("complete");
+    }
+
+    @Test
+    void completeOrder() {
+        // given
+        Order order = this.orderService.order(user, productWithCounts, totalProduct);
+
+        // when
+        Order result = this.orderService.completeOrder(order);
+
+        // then
+        assertThat(result.id()).isEqualTo(order.id());
+        assertThat(result.userId()).isEqualTo(userId);
         assertThat(result.status()).isEqualTo("complete");
     }
 }

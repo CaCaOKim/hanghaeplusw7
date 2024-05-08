@@ -48,7 +48,7 @@ public class ProductService {
             Product product = this.getProduct(productWithCount.productId());
             if (product.stock() >= productWithCount.count()) {
                 products.add(product);
-                totalPrice = product.price() * productWithCount.count();
+                totalPrice += product.price() * productWithCount.count();
             }
         }
 
@@ -64,7 +64,7 @@ public class ProductService {
         List<Product> products = new ArrayList<>();
         for (OrderProduct orderProduct : orderProducts) {
             Product product = this.getProduct(orderProduct.productId());
-            products.add(this.calculateStock(product, orderProduct.count(), TranscationType.USE));
+            products.add(this.updateProduct(this.calculateStock(product, orderProduct.count(), TranscationType.USE)));
         }
         return products;
     }

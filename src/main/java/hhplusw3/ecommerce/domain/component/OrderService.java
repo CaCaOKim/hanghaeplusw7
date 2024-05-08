@@ -21,7 +21,7 @@ public class OrderService {
 
     public Order order(User user, List<ProductWithCount> productWithCounts, TotalProduct totalProduct) {
         Order order = new Order(0, user.id(), user.name(), totalProduct.totalPrice(), "ready", null);
-        Order result = this.orderRepository.orderProducts(order);
+        Order result = this.orderRepository.order(order);
         List<OrderProduct> resultProducts = new ArrayList<>();
         for (ProductWithCount productWithCount : productWithCounts) {
             String productNm = totalProduct.products().stream().filter(p -> productWithCount.productId() == p.id()).findAny().get().name();
@@ -32,13 +32,13 @@ public class OrderService {
 
     public Order updateOrderState(long orderId, String state) {
         Order order = this.orderRepository.getOrder(orderId);
-        Order result = this.orderRepository.updateOrder(new Order(order.id(), order.userId(), order.userNm(), order.totalPrice(), state, null));
+        Order result = this.orderRepository.order(new Order(order.id(), order.userId(), order.userNm(), order.totalPrice(), state, null));
         return result;
     }
 
     public OrderProduct updateOrderProductState(long orderProductId, String state) {
         OrderProduct orderProduct = this.orderRepository.getOrderProduct(orderProductId);
-        OrderProduct result = this.orderRepository.updateOrderProduct(new OrderProduct(orderProduct.id(), orderProduct.orderId(), orderProduct.productId(), orderProduct.productNm(), orderProduct.count(), state));
+        OrderProduct result = this.orderRepository.orderProduct(new OrderProduct(orderProduct.id(), orderProduct.orderId(), orderProduct.productId(), orderProduct.productNm(), orderProduct.count(), state));
         return result;
     }
 
