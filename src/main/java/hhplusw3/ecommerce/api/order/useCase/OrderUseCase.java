@@ -29,20 +29,21 @@ public class OrderUseCase {
     @Transactional
     public OrderRes excute(long userId, List<OrderProductReq> orderProdutReqs) {
         // 1. 상품 조회
-        List<ProductWithCount> productWithCounts = orderProdutReqs.stream().map(op -> new ProductWithCount(op.productId(), op.count())).toList();
-        TotalProduct totalProduct = this.productService.checkProductsStock(productWithCounts);
+        List<ProductWithCount> productWithCounts = orderProdutReqs.stream().map(op -> new ProductWithCount(op.productId(), null, op.count())).toList();
+        productWithCounts = this.productService.checkProductsStock(productWithCounts);
 
         // 2. 잔액 조회
-        User user = this.userService.checkUserMoney(userId, totalProduct.totalPrice());
+        long totalPrice = this.productService.getTotalPrice(productWithCounts);
+        User user = this.userService.checkUserMoney(userId, totalPrice);
 
         // 3. 주문
-        Order order = this.orderService.order(user, productWithCounts, totalProduct);
+        Order order = this.orderService.order(user, productWithCounts);
 
         // 4. 재고 차감
         List<Product> products = this.productService.balanceStock(order.orderProducts());
 
         // 5. 잔액 차감
-        User userResult = this.userService.useMoney(user, totalProduct.totalPrice());
+        User userResult = this.userService.useMoney(user, totalPrice);
 
         // 6. 주문상태 완료로 변경
         Order orderResult = this.orderService.completeOrder(order);

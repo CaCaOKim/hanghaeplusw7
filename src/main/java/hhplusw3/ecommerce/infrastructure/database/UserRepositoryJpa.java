@@ -5,7 +5,9 @@ import hhplusw3.ecommerce.domain.reository.UserRepository;
 import hhplusw3.ecommerce.infrastructure.entity.UserEntity;
 import hhplusw3.ecommerce.infrastructure.jpaRepoExt.UserJpaRepoExt;
 import jakarta.persistence.EntityManager;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public class UserRepositoryJpa implements UserRepository {
 //    private final EntityManager em;
 //    public UserRepositoryJpa(EntityManager em) {

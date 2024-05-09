@@ -6,9 +6,11 @@ import hhplusw3.ecommerce.infrastructure.entity.ProductEntity;
 import hhplusw3.ecommerce.infrastructure.jpaRepoExt.ProductJpaRepoExt;
 import hhplusw3.ecommerce.infrastructure.jpaRepoExt.UserJpaRepoExt;
 import jakarta.persistence.EntityManager;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+@Repository
 public class ProductRepositoryJpa implements ProductRepository {
 //    private final EntityManager em;
 //    public ProductRepositoryJpa(EntityManager em) {

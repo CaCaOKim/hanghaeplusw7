@@ -78,8 +78,8 @@ class ProductServiceTest {
     void checkProductsStock() {
         // given
         List<ProductWithCount> productWithCounts = new ArrayList<>();
-        productWithCounts.add(new ProductWithCount(4, 2));
-        productWithCounts.add(new ProductWithCount(5, 3));
+        productWithCounts.add(new ProductWithCount(4, null, 2));
+        productWithCounts.add(new ProductWithCount(5, null, 3));
 
         // when
         List<Product> mockProducts = new ArrayList<>();
@@ -87,11 +87,13 @@ class ProductServiceTest {
         mockProducts.add(new Product(5, "bottle5", 2000, 100, 200));
         when(productRepository.getProduct(4)).thenReturn(mockProducts.get(0));
         when(productRepository.getProduct(5)).thenReturn(mockProducts.get(1));
-        TotalProduct totalProduct = this.productService.checkProductsStock(productWithCounts);
+        List<ProductWithCount> result = this.productService.checkProductsStock(productWithCounts);
 
         // then
-        assertThat(totalProduct.products()).isEqualTo(mockProducts);
-        assertThat(totalProduct.totalPrice()).isEqualTo(mockProducts.get(0).price() * productWithCounts.get(0).count() + mockProducts.get(1).price() * productWithCounts.get(1).count());
+        assertThat(result.get(0).product()).isEqualTo(mockProducts.get(0));
+        assertThat(result.get(0).count()).isEqualTo(productWithCounts.get(0).count());
+        assertThat(result.get(1).product()).isEqualTo(mockProducts.get(1));
+        assertThat(result.get(1).count()).isEqualTo(productWithCounts.get(1).count());
     }
 
     @Test
@@ -131,5 +133,19 @@ class ProductServiceTest {
 
         // then
         assertThat(result).isEqualTo(new Product(product.id(), product.name(), product.price(), product.stock() - amount, product.sales() + amount));
+    }
+
+    @Test
+    void getTotalPrice() {
+        // given
+        List<ProductWithCount> productWithCounts = new ArrayList<>();
+        productWithCounts.add(new ProductWithCount(1, new Product(1, "bottle", 15000, 30, 1000), 3));
+        productWithCounts.add(new ProductWithCount(1, new Product(2, "bottle2", 13000, 5, 500), 5));
+
+        // when
+        long result = this.productService.getTotalPrice(productWithCounts);
+
+        // then
+        assertThat(result).isEqualTo(15000 * 3 + 13000 * 5);
     }
 }

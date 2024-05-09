@@ -1,11 +1,13 @@
 package hhplusw3.ecommerce.domain.component;
 
+import hhplusw3.ecommerce.domain.model.ProductWithCount;
 import hhplusw3.ecommerce.domain.model.TranscationType;
 import hhplusw3.ecommerce.domain.model.User;
 import hhplusw3.ecommerce.domain.reository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 

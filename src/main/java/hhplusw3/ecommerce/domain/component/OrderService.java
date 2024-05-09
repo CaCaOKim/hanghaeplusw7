@@ -19,15 +19,14 @@ public class OrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Order order(User user, List<ProductWithCount> productWithCounts, TotalProduct totalProduct) {
-        Order order = new Order(0, user.id(), user.name(), totalProduct.totalPrice(), "ready", null);
-        Order result = this.orderRepository.order(order);
-        List<OrderProduct> resultProducts = new ArrayList<>();
+    public Order order(User user, List<ProductWithCount> productWithCounts) {
+        long totalPrice = 0;
         for (ProductWithCount productWithCount : productWithCounts) {
-            String productNm = totalProduct.products().stream().filter(p -> productWithCount.productId() == p.id()).findAny().get().name();
-            resultProducts.add(this.orderRepository.orderProduct(new OrderProduct(0, result.id(), productWithCount.productId(), productNm, productWithCount.count(), "status")));
+            totalPrice += productWithCount.product().price() * productWithCount.count();
         }
-        return new Order(result.id(), result.userId(), result.userNm(), result.totalPrice(), result.status(), resultProducts);
+        Order order = this.orderRepository.order(new Order(0, user.id(), user.name(), totalPrice, "ready", null));
+        List<OrderProduct> resultProducts = productWithCounts.stream().map(pc -> this.orderRepository.orderProduct(new OrderProduct(0, order.id(), pc.productId(), pc.product().name(), pc.count(), "ready"))).toList();
+        return new Order(order.id(), order.userId(), order.userNm(), order.totalPrice(), order.status(), resultProducts);
     }
 
     public Order updateOrderState(long orderId, String state) {

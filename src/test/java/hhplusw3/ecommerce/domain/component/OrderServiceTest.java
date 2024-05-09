@@ -20,13 +20,10 @@ class OrderServiceTest {
     OrderService orderService;
     @Autowired
     UserService userService;
-    @Autowired
-    ProductService productService;
 
     long userId = 1;
     User user;
     List<ProductWithCount> productWithCounts;
-    TotalProduct totalProduct;
 
 
     @BeforeEach
@@ -34,15 +31,14 @@ class OrderServiceTest {
         // given
         this.user = this.userService.getUser(userId);
         this.productWithCounts = new ArrayList<>();
-        this.productWithCounts.add(new ProductWithCount(4, 2));
-        this.productWithCounts.add(new ProductWithCount(5, 3));
-        this.totalProduct = this.productService.checkProductsStock(productWithCounts);
+        this.productWithCounts.add(new ProductWithCount(4, null, 2));
+        this.productWithCounts.add(new ProductWithCount(5, null, 3));
     }
 
     @Test
     void order() {
         // when
-        Order result = this.orderService.order(user, productWithCounts, totalProduct);
+        Order result = this.orderService.order(user, productWithCounts);
 
         // then
         assertThat(result.userId()).isEqualTo(userId);
@@ -59,7 +55,7 @@ class OrderServiceTest {
     @Test
     void updateOrderState() {
         // given
-        Order order = this.orderService.order(user, productWithCounts, totalProduct);
+        Order order = this.orderService.order(user, productWithCounts);
 
         // when
         Order result = this.orderService.updateOrderState(order.id(), "complete");
@@ -72,7 +68,7 @@ class OrderServiceTest {
 
     @Test
     void updateOrderProductState() {
-        Order order = this.orderService.order(user, productWithCounts, totalProduct);
+        Order order = this.orderService.order(user, productWithCounts);
         OrderProduct result = this.orderService.updateOrderProductState(order.orderProducts().get(0).id(), "complete");
 
         assertThat(result.id()).isEqualTo(order.orderProducts().get(0).id());
@@ -83,7 +79,7 @@ class OrderServiceTest {
     @Test
     void completeOrder() {
         // given
-        Order order = this.orderService.order(user, productWithCounts, totalProduct);
+        Order order = this.orderService.order(user, productWithCounts);
 
         // when
         Order result = this.orderService.completeOrder(order);

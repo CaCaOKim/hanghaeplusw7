@@ -40,24 +40,22 @@ public class ProductService {
         return products;
     }
 
-    public TotalProduct checkProductsStock(List<ProductWithCount> productWithCounts) {
+    public List<ProductWithCount> checkProductsStock(List<ProductWithCount> productWithCounts) {
         // 상품 재고 조회
-        List<Product> products = new ArrayList<>();
-        long totalPrice = 0;
+        List<ProductWithCount> result = new ArrayList<>();
         for (ProductWithCount productWithCount : productWithCounts) {
             Product product = this.getProduct(productWithCount.productId());
             if (product.stock() >= productWithCount.count()) {
-                products.add(product);
-                totalPrice += product.price() * productWithCount.count();
+                result.add(new ProductWithCount(productWithCount.productId(), product, productWithCount.count()));
             }
         }
 
         // Exception
-        if (CollectionUtils.isEmpty(products)) {
+        if (CollectionUtils.isEmpty(result)) {
             throw new RuntimeException("제품들이 모두 품절되었습니다.");
         }
 
-        return new TotalProduct(products, totalPrice);
+        return result;
     }
 
     public List<Product> balanceStock(List<OrderProduct> orderProducts) {
@@ -81,6 +79,14 @@ public class ProductService {
         }
 
         return new Product(product.id(), product.name(), product.price(), stock, sales);
+    }
+
+    public long getTotalPrice(List<ProductWithCount> productWithCounts) {
+        long totalPrice = 0;
+        for (ProductWithCount productWithCount : productWithCounts) {
+            totalPrice += productWithCount.product().price() * productWithCount.count();
+        }
+        return totalPrice;
     }
 
 
