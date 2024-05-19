@@ -70,16 +70,19 @@ class OrderServiceTest {
     @Test
     void updateOrderState() {
         // given
+        long orderId = 1;
+        String state = "complete";
+
+        // when
         List<OrderProduct> orderProducts = new ArrayList<>();
         orderProducts.add(new OrderProduct(1, 1, 4, "bottle4", 2, "ready"));
         orderProducts.add(new OrderProduct(2, 1, 5, "bottle5", 3, "ready"));
-        Order order = new Order(1, 1, "robert", 8000, "ready", null);
-
-        // when
-        Order result = this.orderService.updateOrderState(order.id(), "complete");
+        when(orderRepository.getOrder(orderId)).thenReturn(new Order(1, userId, "robert", 8000, "ready", orderProducts));
+        when(orderRepository.order(new Order(1, userId, "robert", 8000, "complete", null))).thenReturn(new Order(1, userId, "robert", 8000, "complete", null));
+        Order result = this.orderService.updateOrderState(orderId, state);
 
         // then
-        assertThat(result.id()).isEqualTo(order.id());
+        assertThat(result.id()).isEqualTo(orderId);
         assertThat(result.userId()).isEqualTo(userId);
         assertThat(result.status()).isEqualTo("complete");
     }
@@ -87,18 +90,18 @@ class OrderServiceTest {
     @Test
     void updateOrderProductState() {
         // given
-        List<OrderProduct> orderProducts = new ArrayList<>();
-        orderProducts.add(new OrderProduct(1, 1, 4, "bottle4", 2, "ready"));
-        orderProducts.add(new OrderProduct(2, 1, 5, "bottle5", 3, "ready"));
-        Order order = new Order(1, 1, "robert", 8000, "ready", null);
+        long orderProductId = 1;
+        String state = "complete";
 
         // when
-        OrderProduct result = this.orderService.updateOrderProductState(order.orderProducts().get(0).id(), "complete");
+        when(orderRepository.getOrderProduct(orderProductId)).thenReturn(new OrderProduct(1, 1, 4, "bottle4", 2, "ready"));
+        when(orderRepository.orderProduct(new OrderProduct(1, 1, 4, "bottle4", 2, state))).thenReturn(new OrderProduct(1, 1, 4, "bottle4", 2, "complete"));
+        OrderProduct result = this.orderService.updateOrderProductState(orderProductId, state);
 
         // then
-        assertThat(result.id()).isEqualTo(order.orderProducts().get(0).id());
-        assertThat(result.productId()).isEqualTo(order.orderProducts().get(0).productId());
-        assertThat(result.status()).isEqualTo("complete");
+        assertThat(result.id()).isEqualTo(orderProductId);
+        assertThat(result.productId()).isEqualTo(4);
+        assertThat(result.status()).isEqualTo(state);
     }
 
     @Test
@@ -107,9 +110,15 @@ class OrderServiceTest {
         List<OrderProduct> orderProducts = new ArrayList<>();
         orderProducts.add(new OrderProduct(1, 1, 4, "bottle4", 2, "ready"));
         orderProducts.add(new OrderProduct(2, 1, 5, "bottle5", 3, "ready"));
-        Order order = new Order(1, 1, "robert", 8000, "ready", null);
+        Order order = new Order(1, 1, "robert", 8000, "ready", orderProducts);
 
         // when
+        when(orderRepository.getOrder(order.id())).thenReturn(new Order(1, userId, "robert", 8000, "ready", orderProducts));
+        when(orderRepository.order(new Order(1, userId, "robert", 8000, "complete", null))).thenReturn(new Order(1, userId, "robert", 8000, "complete", null));
+        when(orderRepository.getOrderProduct(orderProducts.get(0).id())).thenReturn(new OrderProduct(1, 1, 4, "bottle4", 2, "ready"));
+        when(orderRepository.orderProduct(new OrderProduct(orderProducts.get(0).id(), 1, 4, "bottle4", 2, "complete"))).thenReturn(new OrderProduct(1, 1, 4, "bottle4", 2, "complete"));
+        when(orderRepository.getOrderProduct(orderProducts.get(1).id())).thenReturn(new OrderProduct(2, 1, 5, "bottle5", 3, "ready"));
+        when(orderRepository.orderProduct(new OrderProduct(orderProducts.get(1).id(), 1, 5, "bottle5", 3, "complete"))).thenReturn(new OrderProduct(2, 1, 5, "bottle5", 3, "complete"));
         Order result = this.orderService.completeOrder(order);
 
         // then
