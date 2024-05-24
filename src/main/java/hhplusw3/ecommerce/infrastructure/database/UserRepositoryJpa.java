@@ -31,6 +31,16 @@ public class UserRepositoryJpa implements UserRepository {
     }
 
     @Override
+    public User getUserForUpdate(long id) {
+        UserEntity userEntity = this.userJpaRepo.findByIdWithLock(id).orElse(new UserEntity());
+        User result = null;
+        if (userEntity != null){
+            result = new User(userEntity.getId(), userEntity.getName(), userEntity.getMoney());
+        }
+        return result;
+    }
+
+    @Override
     public User updateUser(User user) {
         UserEntity userEntity = new UserEntity();
         userEntity.setId(user.id());

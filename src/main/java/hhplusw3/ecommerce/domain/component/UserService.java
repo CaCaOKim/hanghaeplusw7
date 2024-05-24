@@ -6,6 +6,7 @@ import hhplusw3.ecommerce.domain.model.User;
 import hhplusw3.ecommerce.domain.reository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.concurrent.locks.Lock;
@@ -74,9 +75,10 @@ public class UserService {
         return result;
     }
 
+    @Transactional
     public User checkUserMoney(long userId, long amount) {
         // 잔액 조회
-        User user = this.getUser(userId);
+        User user = this.userRepository.getUserForUpdate(userId);
 
         // Exception
         if (user.money() < amount) {

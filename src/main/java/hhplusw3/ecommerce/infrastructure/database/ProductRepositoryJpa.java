@@ -30,6 +30,12 @@ public class ProductRepositoryJpa implements ProductRepository {
     }
 
     @Override
+    public Product getProductForUpdate(long id) {
+        ProductEntity productEntity = this.productJpaRepo.findByIdWithLock(id).orElse(new ProductEntity());
+        return new Product(productEntity.getId(), productEntity.getName(), productEntity.getPrice(), productEntity.getStock(), productEntity.getSales());
+    }
+
+    @Override
     public Product updateProduct(Product product) {
         ProductEntity productEntity = new ProductEntity();
         productEntity.setId(product.id());

@@ -4,6 +4,7 @@ import hhplusw3.ecommerce.domain.model.*;
 import hhplusw3.ecommerce.domain.reository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import java.util.ArrayList;
@@ -40,11 +41,12 @@ public class ProductService {
         return products;
     }
 
+    @Transactional
     public List<ProductWithCount> checkProductsStock(List<ProductWithCount> productWithCounts) {
         // 상품 재고 조회
         List<ProductWithCount> result = new ArrayList<>();
         for (ProductWithCount productWithCount : productWithCounts) {
-            Product product = this.getProduct(productWithCount.productId());
+            Product product = this.productRepository.getProductForUpdate(productWithCount.productId());
             if (product.stock() >= productWithCount.count()) {
                 result.add(new ProductWithCount(productWithCount.productId(), product, productWithCount.count()));
             }

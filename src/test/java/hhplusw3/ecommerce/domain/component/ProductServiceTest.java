@@ -87,8 +87,8 @@ class ProductServiceTest {
         List<Product> mockProducts = new ArrayList<>();
         mockProducts.add(new Product(4, "bottle4", 1000, 10, 300));
         mockProducts.add(new Product(5, "bottle5", 2000, 100, 200));
-        when(productRepository.getProduct(4)).thenReturn(mockProducts.get(0));
-        when(productRepository.getProduct(5)).thenReturn(mockProducts.get(1));
+        when(productRepository.getProductForUpdate(4)).thenReturn(mockProducts.get(0));
+        when(productRepository.getProductForUpdate(5)).thenReturn(mockProducts.get(1));
         List<ProductWithCount> result = this.productService.checkProductsStock(productWithCounts);
 
         // then

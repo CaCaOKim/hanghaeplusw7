@@ -110,7 +110,7 @@ class UserServiceTest {
     @Test
     void checkUserMoney() {
         // when
-        when(userRepository.getUser(id)).thenReturn(new User(1, "robert", 30000));
+        when(userRepository.getUserForUpdate(id)).thenReturn(new User(1, "robert", 30000));
         User user = this.userService.checkUserMoney(id, amount);
 
         // then

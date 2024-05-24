@@ -11,6 +11,11 @@ public class UserRepositoryMybatis implements UserRepository {
     }
 
     @Override
+    public User getUserForUpdate(long id) {
+        return null;
+    }
+
+    @Override
     public User updateUser(User user) {
         return null;
     }
