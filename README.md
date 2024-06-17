@@ -2,7 +2,6 @@
 
 ## [발생 가능한 동시성 이슈](./document/concurrencyIssue.md)
 ## To-do List (아직 미완성입니다.)
-- 배타락 적용
 - Test코드 변경
 
 ### [swaggerUI](./document/swaggerUI.md)
