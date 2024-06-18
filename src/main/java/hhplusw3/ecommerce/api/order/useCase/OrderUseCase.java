@@ -48,7 +48,7 @@ public class OrderUseCase {
         // 6. 주문상태 완료로 변경
         Order orderResult = this.orderService.completeOrder(order);
 
-        List<OrderProductRes> orderProductResies = order.orderProducts().stream().map(op -> new OrderProductRes(op.id(), op.orderId(), op.productId(), op.productNm(), op.count(), op.status())).toList();
-        return new OrderRes(order.id(), order.userId(), order.userNm(), order.totalPrice(), order.status(), orderProductResies);
+        List<OrderProductRes> orderProductResies = orderResult.orderProducts().stream().map(op -> new OrderProductRes(op.id(), op.orderId(), op.productId(), op.productNm(), op.count(), op.status())).toList();
+        return new OrderRes(orderResult.id(), orderResult.userId(), orderResult.userNm(), orderResult.totalPrice(), orderResult.status(), orderProductResies);
     }
 }
