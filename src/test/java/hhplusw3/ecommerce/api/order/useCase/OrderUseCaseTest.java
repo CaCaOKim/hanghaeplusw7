@@ -67,4 +67,9 @@ class OrderUseCaseTest {
             OrderRes order = this.orderUseCase.excute(2, orderProductReqs);
         }).isInstanceOf(RuntimeException.class);
     }
+
+    @Test
+    void 두명이_동시에_같은_제품을_주문하는_경우() throws InterruptedException {
+
+    }
 }
