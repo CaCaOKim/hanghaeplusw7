@@ -150,4 +150,9 @@ class ProductServiceTest {
         // then
         assertThat(result).isEqualTo(15000 * 3 + 13000 * 5);
     }
+
+    @Test
+    void 재고가_부족할_경우_재고차감_실패() {
+
+    }
 }

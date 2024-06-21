@@ -165,8 +165,8 @@ class UserServiceTest {
     @Test
     void 잔액이_부족할_경우_잔액차감_실패() throws InterruptedException {
         // when then
+        when(userRepository.getUser(id)).thenReturn(new User(1, "robert", 30000));
         assertThatThrownBy(() -> {
-            when(userRepository.getUser(id)).thenReturn(new User(1, "robert", 30000));
             User user = this.userService.checkUserMoney(id, 100000);
         }).isInstanceOf(RuntimeException.class);
     }

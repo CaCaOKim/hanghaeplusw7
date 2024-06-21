@@ -30,17 +30,6 @@ class OrderServiceTest {
     // given
     long userId = 1;
 
-
-//    @BeforeEach
-//    void getParameters() {
-//        // given
-//        when(userRepository.getUser(userId)).thenReturn(new User(1, "robert", 30000));
-//        this.user = this.userService.getUser(userId);
-//        this.productWithCounts = new ArrayList<>();
-//        this.productWithCounts.add(new ProductWithCount(4, new Product(4, "bottle4", 1000, 10, 300), 2));
-//        this.productWithCounts.add(new ProductWithCount(5, new Product(5, "bottle5", 2000, 100, 200), 3));
-//    }
-
     @Test
     void order() {
         // given
